@@ -1,0 +1,5 @@
+## Required Packages
+flask
+beautifulsoup4
+requests
+tabulate
