@@ -1,4 +1,4 @@
-from tabulate import tabulate
+from tabulate import tabulate # type: ignore
 from data_scraper import web_scraper
 
 def create_table(contestants, selections):
@@ -7,8 +7,8 @@ def create_table(contestants, selections):
     bowlers = web_scraper("https://www.espncricinfo.com/records/tournament/bowling-most-wickets-career/icc-men-s-t20-world-cup-2024-15946")
     batterList = []
     bowlerList = []
-    batterList.append(["Name", "Batsmen", "Runs"])
-    bowlerList.append(["Name", "Bowler", "Wickets"])
+    #batterList.append(["Name", "Batsmen", "Runs"])
+    #bowlerList.append(["Name", "Bowler", "Wickets"])
     
     for d in dicti:
         try:
@@ -20,8 +20,8 @@ def create_table(contestants, selections):
         except KeyError:
             bowlerList.append([d,dicti[d][1],f"<{min(bowlers.values())}"])
     
-    print((list_to_html_table(batterList[1:],batterList[0])))#+list_to_html_table(bowlerList[1:],bowlerList[0]))
-    print(tabulate(batterList,frmt='html'))
+    return(batterList, bowlerList)#+list_to_html_table(bowlerList[1:],bowlerList[0]))
+    #print(tabulate(batterList,tablefmt='html'))
 
 def list_to_html_table(data, columns=None):
     """Converts a list of lists or list of dictionaries into a basic HTML table."""

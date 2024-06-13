@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template # type: ignore
 from data import create_table
 
 app = Flask(__name__)
@@ -9,7 +8,8 @@ app = Flask(__name__)
 def home():
     contestants = ['Jesse','Simran','Sankalp','Sanjay','Sumat','Akhil']
     selections = [['Head','Nortje'],['Marsh','Zampa'],['Warner','Bumrah'],['Kohli','Starc'],['Yadav','Boult'],['Pooran','Pandya']]
-    return create_table(contestants, selections)
+    res = create_table(contestants, selections)
+    return render_template('webpage.html',batterData=res[0], bowlerData=res[1])
 
 if __name__ == "__main__":
     app.run(debug=True)
