@@ -6,7 +6,11 @@
         /* define some CSS styling on page elements */
         #txtInput {width: 85%; height: 60px; float:left; padding: 10px;}
         #cmdInput {margin-left: 10px; width:10%; height:80px; font-weight: bold;}
-        #txtOutput {
+        #batter {
+            width: 96%; height: 300px; font-family: "Courier New"; padding: 10px; 
+            border: 1px solid gray; margin-top: 10px; overflow:auto;
+        }
+        #bowler {
             width: 96%; height: 300px; font-family: "Courier New"; padding: 10px; 
             border: 1px solid gray; margin-top: 10px; overflow:auto;
         }
@@ -25,13 +29,23 @@
         tr:nth-child(even) {
             background-color: #dddddd;
         }
+
+        th {
+            cursor: pointer;
+            background-color: #f2f2f2;
+            transition: background-color 0.3s ease;
+        }
+
+        th:hover {
+            background-color: #ddd;
+        }
     </style>
 </head>
 <body>
     <h1>IPL BOYS Fantasy League</h1>
     <h2>Leading Run Scorer</h1>
     <!-- <button id="cmdInput">Go</button>-->
-    <table id="txtOutput" class="sortable">
+    <table id="batter" class="sortable">
         <tr>
             <th>Name</th>
             <th>Batsmen</th>
@@ -47,7 +61,7 @@
     </table>
     <h2>Leading Wicket Taker</h1>
     <!-- <button id="cmdInput">Go</button>-->
-    <table id="txtOutput" class="sortable">
+    <table id="bowler" class="sortable">
         <tr>
             <th>Name</th>
             <th>Bowler</th>
@@ -61,5 +75,94 @@
             </tr>
         {% endfor %}
     </table>
+    <script>
+        // Function to sort the table
+        function sortTable(tableId, colIndex) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById(tableId);
+            switching = true;
+            // Set the sorting direction to ascending:
+            dir = "asc"; 
+            const headers = table.rows[0].getElementsByTagName("th");
+            const isNumeric = headers[colIndex].innerText.toLowerCase() === 'runs' || headers[colIndex].innerText.toLowerCase() === 'wickets';
+            
+            /* Make a loop that will continue until
+            no switching has been done: */
+            while (switching) {
+                // Start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /* Loop through all table rows (except the
+                first, which contains table headers): */
+                for (i = 1; i < (rows.length - 1); i++) {
+                    // Start by saying there should be no switching:
+                    shouldSwitch = false;
+                    // Get the two elements you want to compare,
+                    // one from current row and one from the next:
+                    x = rows[i].getElementsByTagName("TD")[colIndex];
+                    y = rows[i + 1].getElementsByTagName("TD")[colIndex];
+                    /* Check if the two rows should switch place,
+                    based on the direction, asc or desc: */
+                    if (dir == "asc") {
+                        if (isNumeric) {
+                            if (parseFloat(x.innerHTML) > parseFloat(y.innerHTML)) {
+                                // If so, mark as a switch and break the loop:
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else {
+                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                                // If so, mark as a switch and break the loop:
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    } else if (dir == "desc") {
+                        if (isNumeric) {
+                            if (parseFloat(x.innerHTML) < parseFloat(y.innerHTML)) {
+                                // If so, mark as a switch and break the loop:
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else {
+                            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                                // If so, mark as a switch and break the loop:
+                                shouldSwitch = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /* If a switch has been marked, make the switch
+                    and mark that a switch has been done: */
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    // Each time a switch is done, increase this count by 1:
+                    switchcount++;
+                } else {
+                    /* If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again. */
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        // Attach sort function to table headers
+        document.addEventListener('DOMContentLoaded', function() {
+            const tables = document.querySelectorAll('.sortable');
+            tables.forEach(table => {
+                const headers = table.querySelectorAll('th');
+                headers.forEach((header, index) => {
+                    header.addEventListener('click', () => {
+                        sortTable(table.id, index);
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
