@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import render_template
 from data import create_table
 
 app = Flask(__name__)
